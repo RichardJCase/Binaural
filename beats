@@ -7,33 +7,33 @@ import pyaudio
 import argparse
 
 parser = argparse.ArgumentParser(
-    prog="beats",
-    usage="beats [options]",
-    description="Play some tones."
+    prog = "beats",
+    usage = "beats [options]",
+    description = "Play some tones."
 )
 parser.add_argument(
     "-f",
     "--frequency",
-    default=400,
-    help="Frequency (hz). Recommend starting with 400."
+    default = 400,
+    help = "Frequency (hz). Recommend starting with 400."
 )
 parser.add_argument(
     "-o",
     "--offset",
-    default=10,
-    help="Frequency offset (hz). Recommend lower values like 10."
+    default = 10,
+    help = "Frequency offset (hz). Recommend lower values like 10."
 )
 
 args = parser.parse_args()
 
-RATE=44100
+RATE = 44100
 PERIOD = 60 #click helps keep brain from turning to mush
 BASE = int(args.frequency)
 OFFSET = int(args.offset)
-VOLUME=2**13-1.0 
-WAVE=sin
+VOLUME = 2**13-1.0 
+WAVE = sin
 CHANNELS = 2
-WIDTH=2
+WIDTH = 2
 
 player = pyaudio.PyAudio().open(
     format = pyaudio.get_format_from_width(WIDTH),
