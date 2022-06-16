@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+
+from struct import pack
+from math import sin, pi
+import random
+import pyaudio
+import argparse
+
+parser = argparse.ArgumentParser(
+    prog="beats",
+    usage="beats [options]",
+    description="Play some tones."
+)
+parser.add_argument(
+    "-f",
+    "--frequency",
+    default=400,
+    help="Frequency (hz). Recommend starting with 400."
+)
+parser.add_argument(
+    "-o",
+    "--offset",
+    default=10,
+    help="Frequency offset (hz). Recommend lower values like 10."
+)
+
+args = parser.parse_args()
+
+RATE=44100
+PERIOD = 60 #click helps keep brain from turning to mush
+BASE = int(args.frequency)
+OFFSET = int(args.offset)
+VOLUME=2**13-1.0 
+WAVE=sin
+CHANNELS = 2
+WIDTH=2
+
+player = pyaudio.PyAudio().open(
+    format = pyaudio.get_format_from_width(WIDTH),
+    channels = CHANNELS,
+    rate = RATE,
+    output = True
+)
+
+result = bytearray()
+for i in range(0, RATE * PERIOD):
+    left = pack('h', int(VOLUME * WAVE(i * BASE / RATE)))
+    right = pack('h', int(VOLUME * WAVE(i * (BASE + OFFSET) / RATE)))
+    result.extend(left)
+    result.extend(right)
+
+result = bytes(result)
+
+while True:
+    player.write(result)
